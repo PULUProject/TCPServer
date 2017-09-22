@@ -1,0 +1,4 @@
+*.pyc
+.idea
+static/upload/*
+static/uploadFace/*
