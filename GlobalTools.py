@@ -54,8 +54,10 @@ def responseToDown(data, device_type, socket_pool,cache):
     if commandCode in device_type:
         deviceName = device_type[commandCode]
         s = socket_pool[deviceName]
-
-        makePack(s, commandCode, cache.get("%s_U" % deviceName))
+        upCache = cache.get("%s_U" % deviceName)
+        if not upCache:
+            upCache = Config().conf["Socket"]["defaultResponse"]
+        makePack(s, commandCode, upCache)
         dataList = getFloats(data)["content"]
         cache.set("%s_D" % deviceName, dataList)
 def sendCommandToDown(command, target,device_type, socket_pool,cache):
@@ -99,5 +101,6 @@ def getFloats(data):
 
 
 device_type = Config().conf["Socket"]["device_type"]
+device_type_need_response = Config().conf["Socket"]["device_type_need_response"]
 cacheObj=CacheFactory().getCache()
 config = Config().conf
