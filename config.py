@@ -12,7 +12,7 @@ config = \
                 {"\x00\x00": "device_0", "\x00\x01": "LIGHT_1", "\x00\x02": "GUN_1", "\x00\x03": "DESK_1",
                  "\x00\x04": "DOOR_1", "\x01\x00": "web", "\x02\x00": "H5"},
             "device_type_need_response":
-                {"\x00\x01": "LIGHT_1", "\x00\x02": "GUN_1", "\x00\x03": "DESK_1",
+                {"\x00\x01": "LIGHT_1", "\x00\x02": "GUN_1",
                  "\x00\x04": "DOOR_1", "\x01\x00": "web"},
             "defaultResponse":[0.0,0.0]
 

@@ -21,8 +21,8 @@ class Consumer(Thread):
                 data = ast.literal_eval(data)
             target = data[0]
             command = data[1:len(data)]
-            print sendCommandToDown(command, target, device_type, socket_pool, cacheObj)["msg"]
-
+            # print sendCommandToDown(command, target, device_type, socket_pool, cacheObj)["msg"]
+            sendCommandToDown(command, target, device_type, socket_pool, cacheObj)
 
 class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
     ip = ""
@@ -72,7 +72,7 @@ def StartServer():
 
 if __name__ == '__main__':
     threadingCount = config["Queue"]["threading_count"]
-    for i in range(1):
+    for i in range(4):
         c = Consumer()
         c.start()
     StartServer()
