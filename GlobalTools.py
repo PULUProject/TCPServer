@@ -2,6 +2,7 @@
 import struct
 import redis
 import ast
+import logging
 from werkzeug.contrib.cache import MemcachedCache
 
 
@@ -12,7 +13,7 @@ class Config(object):
             from config import config
             self.conf = config
         except:
-            print u"未找到"
+            logging.info("未找到")
 
     def getConfig(self, sec):
         return self.conf[sec]
@@ -24,7 +25,7 @@ class Config(object):
             result = result[i]
         return result
 
-
+#web中间层
 class CacheFactory(object):
     def redisCache(self, url="127.0.0.1", port=6379):
         self.redisPool = redis.ConnectionPool(host=url, port=port)
@@ -45,7 +46,7 @@ class CacheFactory(object):
             timeout = Config().conf["Cache"]["memcached"]["timeout"]
             cache = CacheFactory().memcachedCache(timeout)
         return cache
-
+#向下位机发送响应
 def responseToDown(data, device_type, socket_pool,cache):
 
     commandCode = data[2:4]
@@ -60,6 +61,7 @@ def responseToDown(data, device_type, socket_pool,cache):
         makePack(s, commandCode, upCache)
         dataList = getFloats(data)["content"]
         cache.set("%s_D" % deviceName, dataList)
+#向下位机发送命令
 def sendCommandToDown(command, target,device_type, socket_pool,cache):
     if not device_type:
         return
@@ -70,6 +72,7 @@ def sendCommandToDown(command, target,device_type, socket_pool,cache):
         commandCode =  {value:key for key,value in device_type.iteritems()}[target]
         makePack(s, commandCode, command)
     return {"status": "", "msg": "发送成功"}
+
 def makePack(server, commandNum, dataArray):
     dataStr = ""
     if type(dataArray)==type("a"):
@@ -78,10 +81,10 @@ def makePack(server, commandNum, dataArray):
 
     for i in dataArray:
         dataStr = dataStr + struct.pack('f', float(i))
-    print "sending:"
-    print dataArray
+    logging.debug("sending:")
+    logging.debug(dataArray)
     server.request.sendall("\xA5\x5A" + commandNum + dataStr + "\xFF")
-    print "sended"
+    logging.debug("sended")
 
 
 def getFloats(data):
@@ -98,7 +101,6 @@ def getFloats(data):
             stat = round(stat, 2)
             result["content"].append(stat)
     return result
-
 
 device_type = Config().conf["Socket"]["device_type"]
 device_type_need_response = Config().conf["Socket"]["device_type_need_response"]
